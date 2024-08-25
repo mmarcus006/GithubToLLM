@@ -1,6 +1,7 @@
 import unittest
 import os
 import tempfile
+import shutil
 from github_repo_analyzer import get_file_content, create_markdown, create_file_tree
 
 class TestGithubRepoAnalyzer(unittest.TestCase):
@@ -13,8 +14,7 @@ class TestGithubRepoAnalyzer(unittest.TestCase):
             f.write(self.test_file_content)
 
     def tearDown(self):
-        os.remove(self.test_file_path)
-        os.rmdir(self.temp_dir)
+        shutil.rmtree(self.temp_dir, ignore_errors=True)
 
     def test_get_file_content(self):
         content = get_file_content(self.test_file_path)
@@ -29,8 +29,8 @@ class TestGithubRepoAnalyzer(unittest.TestCase):
         
         self.assertIn("# test_file.py", content)
         self.assertIn("```", content)
-        self.assertIn("**def** test_function", content)
-        self.assertIn("**class** TestClass", content)
+        self.assertIn("**def test_function**", content)
+        self.assertIn("**class TestClass**", content)
 
     def test_create_file_tree(self):
         output_file = os.path.join(self.temp_dir, "tree.txt")
